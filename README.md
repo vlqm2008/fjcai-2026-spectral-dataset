@@ -1,6 +1,7 @@
 # 📈 FJCAI 2026 Master Dataset & Empirical Benchmark Suite
 
-[![Dataset License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![Live Interactive Dashboard](https://img.shields.io/badge/Live_Dashboard-GitHub_Pages-brightgreen.svg)](https://vlqm2008.github.io/fjcai-2026-spectral-dataset/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Paper: FJCAI 2026](https://img.shields.io/badge/Paper-FJCAI_2026-blue.svg)](#-paper-background--executive-summary)
 [![Target Assets: 6 Tier-1 Financial Series](https://img.shields.io/badge/Assets-6_Tier_1_Series-brightgreen.svg)](#-asset-coverage--summary-statistics)
 [![Total Records: 19,033 Daily Steps](https://img.shields.io/badge/Records-19%2C033_Steps-orange.svg)](#-dataset-overview)
@@ -222,6 +223,9 @@ Located at [`benchmark_results/fjcai_table3_cross_horizon_cutoffs.csv`](benchmar
 ---
 
 ## 📑 Interactive Dashboard & Complete Reports
+
+> 🌐 **Live Web Application:** [https://vlqm2008.github.io/fjcai-2026-spectral-dataset/](https://vlqm2008.github.io/fjcai-2026-spectral-dataset/)  
+> Open directly in any desktop or mobile browser to search, filter, and inspect all 54 metric configurations in real time with zero installation!
 
 In addition to the raw CSV files, this repository provides complete self-contained documentation in the [`reports/`](reports/) folder:
 

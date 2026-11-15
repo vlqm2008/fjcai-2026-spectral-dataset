@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIO Báo Cáo Tổng Hợp Dữ Liệu & Mô Hình - FJCAI 2026</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #1e293b; background-color: #f8fafc; padding-top: 30px; padding-bottom: 60px; }
+        .paper-container { max-width: 1000px; margin: 0 auto; background: #ffffff; padding: 40px 50px; border-radius: 12px; box-shadow: 0 4px 25px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
+        h1 { color: #0f172a; font-weight: 800; font-size: 28px; border-bottom: 3px solid #0284c7; padding-bottom: 12px; margin-bottom: 20px; }
+        h2 { color: #0369a1; font-weight: 700; font-size: 22px; margin-top: 35px; margin-bottom: 15px; border-left: 4px solid #0284c7; padding-left: 12px; }
+        h3 { color: #334155; font-weight: 600; font-size: 17px; margin-top: 20px; }
+        .alert-custom { background-color: #f0f9ff; border-left: 4px solid #0284c7; padding: 15px; border-radius: 6px; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+        th { background-color: #0f172a; color: #ffffff; padding: 10px 12px; text-align: left; border: 1px solid #cbd5e1; font-weight: 600; }
+        td { padding: 9px 12px; border: 1px solid #cbd5e1; }
+        tr:nth-child(even) { background-color: #f8fafc; }
+        code { background-color: #f1f5f9; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 13px; }
+        .badge-success { background-color: #10b981; color: white; padding: 4px 8px; border-radius: 4px; }
+        .badge-primary { background-color: #0284c7; color: white; padding: 4px 8px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="paper-container">
+        <h1>TÀI LIỆU TỔNG HỢP TOÀN DIỆN DỮ LIỆU & MÔ HÌNH (AIO MASTER GUIDE)</h1>
+        <div class="alert-custom">
+            <strong>Bài báo gốc:</strong> <em>Spectral Consistency Regularization for Long-Horizon Probabilistic Forecasting with Temporal Fusion Transformers</em> (FJCAI 2026)<br>
+            <strong>Tác giả:</strong> Dinh-Phu Vo, Duc-Hien Nguyen, Phuoc-Tung Nguyen<br>
+            <strong>Tệp dữ liệu gốc bàn giao:</strong> <code>DATA_GOC_BAI_BAO_FJCAI_6ASSETS.csv</code> (19,033 dòng, 18 cột đặc trưng)
+        </div>
+
+        <h2>1. TỔNG QUAN BỘ DỮ LIỆU GỐC CỦA BÀI BÁO</h2>
+        <p>Bộ dữ liệu bao gồm 6 chuỗi tài sản đại diện cho thị trường tài chính Hoa Kỳ thu thập qua Yahoo Finance API từ <strong>01/01/2010 đến 30/12/2022</strong> (13 năm liên tục, gồm các giai đoạn thị trường tăng trưởng, cú sốc COVID-19 năm 2020, đợt bùng nổ 2021 và thắt chặt tiền tệ lạm phát 2022).</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã (Ticker)</th>
+                    <th>Tên Tài Sản</th>
+                    <th>Số mẫu quan sát</th>
+                    <th>Ngày bắt đầu</th>
+                    <th>Ngày kết thúc</th>
+                    <th>Mẫu Train (&le; 2021-06-30)</th>
+                    <th>Mẫu Test (&gt; 2021-06-30)</th>
+                    <th>Kỳ vọng (&mu;)</th>
+                    <th>Độ lệch chuẩn (&sigma;)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><code>AAPL</code></td><td>Apple Inc.</td><td>3,272</td><td>2010-01-04</td><td>2022-12-30</td><td>2,893</td><td>379</td><td>+0.001050</td><td>0.017825</td></tr>
+                <tr><td><code>MSFT</code></td><td>Microsoft Corp.</td><td>3,272</td><td>2010-01-04</td><td>2022-12-30</td><td>2,893</td><td>379</td><td>+0.000838</td><td>0.015914</td></tr>
+                <tr><td><code>GOOG</code></td><td>Alphabet Inc.</td><td>3,272</td><td>2010-01-04</td><td>2022-12-30</td><td>2,893</td><td>379</td><td>+0.000720</td><td>0.016332</td></tr>
+                <tr><td><code>AMZN</code></td><td>Amazon.com Inc.</td><td>3,272</td><td>2010-01-04</td><td>2022-12-30</td><td>2,893</td><td>379</td><td>+0.001122</td><td>0.019731</td></tr>
+                <tr><td><code>META</code></td><td>Meta Platforms</td><td>2,673</td><td>2012-05-18</td><td>2022-12-30</td><td>2,294</td><td>379</td><td>+0.000962</td><td>0.023182</td></tr>
+                <tr><td><code>^GSPC</code></td><td>S&P 500 Index</td><td>3,272</td><td>2010-01-04</td><td>2022-12-30</td><td>2,893</td><td>379</td><td>+0.000461</td><td>0.010965</td></tr>
+                <tr style="font-weight: bold; background: #e2e8f0;"><td>TỔNG CỘNG</td><td>6 Tài Sản</td><td>19,033</td><td>2010-01-04</td><td>2022-12-30</td><td>16,759</td><td>2,274</td><td>—</td><td>—</td></tr>
+            </tbody>
+        </table>
+
+        <h2>2. TỪ ĐIỂN DỮ LIỆU ĐẦY ĐỦ 18 CỘT (DATA DICTIONARY)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên cột (Column)</th>
+                    <th>Kiểu dữ liệu</th>
+                    <th>Miền giá trị (Min &rarr; Max)</th>
+                    <th>Định nghĩa / Công thức toán học</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td><code>date</code></td><td>String</td><td>2010-01-04 &rarr; 2022-12-30</td><td>Ngày giao dịch (YYYY-MM-DD).</td></tr>
+                <tr><td>2</td><td><code>ticker</code></td><td>String</td><td>AAPL, MSFT, GOOG, AMZN, META, ^GSPC</td><td>Mã chứng khoán đại diện.</td></tr>
+                <tr><td>3</td><td><code>asset</code></td><td>String</td><td>AAPL &rarr; SP500</td><td>Tên tài sản chuẩn hóa.</td></tr>
+                <tr><td>4</td><td><code>adj_close</code></td><td>Float64</td><td>5.43 &rarr; 4,796.56</td><td>Giá đóng cửa điều chỉnh sau cổ tức và chia tách cổ phiếu (USD).</td></tr>
+                <tr><td>5</td><td><code>volume</code></td><td>Float64</td><td>1.58e5 &rarr; 1.06e10</td><td>Khối lượng giao dịch cổ phiếu trong ngày.</td></tr>
+                <tr><td>6</td><td><code>log_return</code></td><td>Float64</td><td>-0.3064 &rarr; +0.2594</td><td>Lợi suất log hàng ngày: \(r_t = \ln(P_t / P_{t-1})\). Biến mục tiêu gốc.</td></tr>
+                <tr><td>7</td><td><code>sin_dow</code></td><td>Float64</td><td>-0.9511 &rarr; +0.9511</td><td>Mã hóa lượng giác thứ trong tuần: \(\sin(2\pi \cdot \text{dow} / 5)\).</td></tr>
+                <tr><td>8</td><td><code>cos_dow</code></td><td>Float64</td><td>-0.8090 &rarr; +1.0000</td><td>Mã hóa lượng giác thứ trong tuần: \(\cos(2\pi \cdot \text{dow} / 5)\).</td></tr>
+                <tr><td>9</td><td><code>sin_month</code></td><td>Float64</td><td>-1.0000 &rarr; +1.0000</td><td>Mã hóa lượng giác tháng trong năm: \(\sin(2\pi \cdot \text{month} / 12)\).</td></tr>
+                <tr><td>10</td><td><code>cos_month</code></td><td>Float64</td><td>-1.0000 &rarr; +1.0000</td><td>Mã hóa lượng giác tháng trong năm: \(\cos(2\pi \cdot \text{month} / 12)\).</td></tr>
+                <tr><td>11</td><td><code>rolling_mean_20d</code></td><td>Float64</td><td>-0.0699 &rarr; +0.0231</td><td>Trung bình trượt lợi suất cửa sổ 20 ngày.</td></tr>
+                <tr><td>12</td><td><code>rolling_vol_20d</code></td><td>Float64</td><td>0.0000 &rarr; 0.0823</td><td>Độ biến động trượt (Độ lệch chuẩn) cửa sổ 20 ngày.</td></tr>
+                <tr><td>13</td><td><code>rolling_mean_60d</code></td><td>Float64</td><td>-0.0699 &rarr; +0.0123</td><td>Trung bình trượt lợi suất cửa sổ 60 ngày.</td></tr>
+                <tr><td>14</td><td><code>rolling_vol_60d</code></td><td>Float64</td><td>0.0000 &rarr; 0.0823</td><td>Độ biến động trượt (Độ lệch chuẩn) cửa sổ 60 ngày.</td></tr>
+                <tr><td>15</td><td><code>momentum_20d</code></td><td>Float64</td><td>-0.3716 &rarr; +0.5860</td><td>Chỉ báo động lượng 20 ngày: \((P_t - P_{t-20}) / P_{t-20}\).</td></tr>
+                <tr><td>16</td><td><code>momentum_60d</code></td><td>Float64</td><td>-0.5015 &rarr; +1.0897</td><td>Chỉ báo động lượng 60 ngày: \((P_t - P_{t-60}) / P_{t-60}\).</td></tr>
+                <tr><td>17</td><td><code>split_2021</code></td><td>String</td><td>train_val, test_ood</td><td>Nhãn phân chia mốc 2021-06-30.</td></tr>
+                <tr><td>18</td><td><code>z_return_2021</code></td><td>Float64</td><td>-13.258 &rarr; +11.147</td><td>Lợi suất đã chuẩn hóa z-score theo mốc cắt in-sample: \(z = (r - \mu)/\sigma\).</td></tr>
+            </tbody>
+        </table>
+
+        <h2>3. QUAN HỆ GIỮA DỮ LIỆU VÀ MÔ HÌNH (DATA & MODEL BRIDGE)</h2>
+        <div class="alert-custom">
+            <strong>Tóm tắt 1 câu:</strong> Data cung cấp các chỉ báo vĩ mô/biến động để model chọn lọc đặc trưng (qua VSN), còn cơ chế Spectral của bài báo dùng phép biến đổi Fourier (rFFT) để "khoá" model không bị trôi dạt sai lệch khỏi xu hướng dài hạn của Data khi dự báo 120 - 250 ngày tới.
+        </div>
+        <ul>
+            <li><strong>Đặc tính dữ liệu tần số thấp vs Ràng buộc hàm mất mát phổ (\(\mathcal{L}_{spec}\)):</strong> Lợi suất tài chính hàng ngày có tỷ lệ tín hiệu trên nhiễu cực thấp. Mô hình TFT gốc khi dự báo từng bước độc lập sẽ tích lũy sai số thành độ trôi dạt khổng lồ ở chân trời xa (\(H=120, 250\)). Bằng việc biến đổi Fourier rFFT trên quỹ đạo tích lũy \(s_t = \sum r_\tau\), hàm mất mát \(\mathcal{L}_{spec}\) khớp năng lượng ở dải tần số thấp (\(K = \lfloor 0.25 N_f \rfloor\)), giúp giảm hơn 34% sai số MAE.</li>
+            <li><strong>Đặc trưng đa biến vs Khối Variable Selection Networks (VSN):</strong> VSN tự động điều tiết trọng số: khi thị trường rơi vào pha khủng hoảng biến động lớn (như COVID 2020), model tự động nâng tỷ trọng biến <code>rolling_vol</code> và hạ thấp các biến gây nhiễu.</li>
+            <li><strong>Gom cụm biến động vs Hiệu chuẩn xác suất:</strong> Việc điều chuẩn phổ trên phân vị trung vị \(q=0.5\) gián tiếp ổn định toàn bộ hình dạng phân phối xác suất chung, nâng độ phủ từ 34.4% lên 68.2% (trong SpectralTFT) và lên 80–85% khi kết hợp Conformal Prediction (CQR).</li>
+        </ul>
+
+        <h2>4. BẢNG KẾT QUẢ THỰC NGHIỆM ĐỐI CHUẨN (TABLE I & II)</h2>
+        <h3>Bảng I: Hiệu năng toàn cầu tại mốc 2021-06-30 và Horizon H = 120</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Mô hình</th>
+                    <th>MAE</th>
+                    <th>RMSE</th>
+                    <th>sMAPE</th>
+                    <th>Coverage (10–90%)</th>
+                    <th>Winkler Score</th>
+                    <th>Spectral Loss (\(\mathcal{L}_{spec}\))</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>TFT Baseline (Gốc)</td><td>1.007</td><td>1.320</td><td>1.294</td><td>0.556 (55.6%)</td><td>5.496</td><td>41.1865</td></tr>
+                <tr style="font-weight: bold; background: #e0f2fe;"><td>SpectralTFT (Đề xuất)</td><td>0.663</td><td>0.896</td><td>1.062</td><td>0.870 (87.0%)</td><td>3.230</td><td>1.6691</td></tr>
+                <tr style="font-weight: bold; color: #0284c7;"><td>Mức cải thiện</td><td>-34.1%</td><td>-32.1%</td><td>-17.9%</td><td>+31.4%</td><td>-41.2%</td><td>-95.9%</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Bảng II: MAE của SpectralTFT qua 3 mốc cắt thời gian (H = 120)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Mốc cắt huấn luyện</th>
+                    <th>Tính chất giai đoạn</th>
+                    <th>TFT Baseline MAE</th>
+                    <th>SpectralTFT MAE</th>
+                    <th>Mức giảm MAE (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>2017-12-31</td><td>Thị trường tăng trưởng ổn định (Low Volatility)</td><td>0.943</td><td>0.598</td><td>-36.6%</td></tr>
+                <tr><td>2019-12-31</td><td>Giai đoạn tiền khủng hoảng COVID</td><td>0.998</td><td>0.641</td><td>-35.8%</td></tr>
+                <tr><td>2021-06-30</td><td>Biến động cực đoan & đảo chiều xu hướng</td><td>1.007</td><td>0.663</td><td>-34.1%</td></tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
