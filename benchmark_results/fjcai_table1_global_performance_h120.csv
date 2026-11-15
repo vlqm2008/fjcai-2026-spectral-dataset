@@ -1,0 +1,3 @@
+Model,MAE,RMSE,sMAPE,Coverage (10-90%),Winkler Score,Spectral Loss
+TFT Baseline,1.007,1.32,1.294,0.556,5.496,41.1865
+SpectralTFT (Proposed),0.663,0.896,1.062,0.87,3.23,1.6691
