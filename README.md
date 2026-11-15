@@ -9,8 +9,7 @@
 Official standalone repository containing the complete benchmark dataset, empirical evaluation tables, and interactive visualizations for the research paper:
 
 > **"Spectral Consistency Regularization for Long-Horizon Probabilistic Forecasting with Temporal Fusion Transformers"**  
-> *Under Review at FJCAI 2026 / CITA 2027 Phase 2*  
-> **Author / Lead Researcher:** Quang Minh (`vlqm2008`)
+> *Under Review at FJCAI 2026 / CITA 2027 Phase 2*
 
 ---
 
@@ -21,8 +20,6 @@ Official standalone repository containing the complete benchmark dataset, empiri
 4. [Empirical Replication Tables (Paper Results)](#-empirical-replication-tables)
 5. [Visualizations & Interactive Dashboard](#-visualizations--interactive-dashboard)
 6. [Repository Structure](#-repository-structure)
-7. [Quickstart (Python)](#-quickstart-python)
-8. [Citation & Contact](#-citation--contact)
 
 ---
 
@@ -160,46 +157,3 @@ fjcai-2026-spectral-dataset/
 └── README.md
 ```
 
----
-
-## ⚡ Quickstart (Python)
-
-```bash
-# Clone the repository
-git clone https://github.com/vlqm2008/fjcai-2026-spectral-dataset.git
-cd fjcai-2026-spectral-dataset
-
-# Run dataset inspection
-python quickstart.py
-```
-
-### Loading in Pandas:
-```python
-import pandas as pd
-
-# Load master dataset
-df = pd.read_csv("data/fjcai_spectral_6assets_master.csv", parse_dates=["date"])
-
-# Filter for Apple Inc. (AAPL)
-df_aapl = df[df["ticker"] == "AAPL"].sort_values("date")
-print(f"Loaded {len(df_aapl)} daily steps for AAPL.")
-```
-
----
-
-## 📜 Citation & Contact
-
-If you use this dataset or benchmark suite in your research, please cite:
-
-```bibtex
-@inproceedings{quangminh2026spectral,
-  title={Spectral Consistency Regularization for Long-Horizon Probabilistic Forecasting with Temporal Fusion Transformers},
-  author={Quang Minh, V. L.},
-  booktitle={Proceedings of the Federated Joint Conference on Artificial Intelligence (FJCAI)},
-  year={2026}
-}
-```
-
-- **Researcher:** Quang Minh (`vlqm2008`)  
-- **Email:** `vlqminh27@gmail.com`  
-- **GitHub:** [https://github.com/vlqm2008](https://github.com/vlqm2008)
