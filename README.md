@@ -16,10 +16,11 @@ Official standalone repository containing the complete benchmark dataset, empiri
 ## 📑 Table of Contents
 1. [Dataset Overview](#-dataset-overview)
 2. [Data Dictionary & TFT Variable Classification](#-data-dictionary--tft-variable-classification)
-3. [Asset Coverage & Summary Statistics](#-asset-coverage--summary-statistics)
-4. [Empirical Replication Tables (Paper Results)](#-empirical-replication-tables)
-5. [Visualizations & Interactive Dashboard](#-visualizations--interactive-dashboard)
-6. [Repository Structure](#-repository-structure)
+3. [Data-to-Model Architecture Bridge (Quan Hệ Data & Model)](#-data-to-model-architecture-bridge)
+4. [Asset Coverage & Summary Statistics](#-asset-coverage--summary-statistics)
+5. [Empirical Replication Tables (Paper Results)](#-empirical-replication-tables)
+6. [Visualizations & Interactive Dashboard](#-visualizations--interactive-dashboard)
+7. [Repository Structure](#-repository-structure)
 
 ---
 
@@ -59,6 +60,43 @@ In the **Temporal Fusion Transformer (TFT)** and **Spectral Consistency TFT** ar
 | `momentum_60d` | `float64` | Observed Past Input | 60-day cumulative price momentum: $(P_t - P_{t-60}) / P_{t-60}$. |
 | `split_2021` | `categorical (str)` | **Experimental Partition** | Partition flag: `train_val` (pre-2021, 16,759 rows) vs `test_ood` (2021-2022 OOD, 2,274 rows). |
 | `z_return_2021` | `float64` | **Normalized Target** | Z-score standardized return computed strictly on pre-2021 parameters to avoid data leakage. |
+
+---
+
+## 🔗 Data-to-Model Architecture Bridge (Mối Quan Hệ Giữa Data và Model)
+
+Understanding how each column in this dataset couples into the **Temporal Fusion Transformer (TFT)** architecture and the **Spectral Consistency Regularization** mechanism is fundamental to interpreting the empirical results.
+
+### 🗺️ Data-to-Model Structural Mapping Pipeline
+
+```text
+[RAW INPUT COLUMNS IN CSV] ───────────────────────────> [TFT MODULE] ───────────────────────────> [ROLE & REGULARIZATION]
+1. ticker, asset                           ──> Entity Embedding Matrix (e_s)       ──> Static Context Enrichment
+2. sin/cos dow, sin/cos month              ──> Temporal Decoder Input              ──> Known Future Seasonality Encoding
+3. volume, rolling_mean/vol, momentum      ──> Variable Selection Networks (VSN)   ──> Gated Feature Importance & Adaptive Filtering
+4. log_return, z_return_2021               ──> Quantile Linear Heads (q10, q50, q90)──> Probabilistic Interval Output
+                                                              │
+                                                              ▼
+                                                     [Median Path q_0.5]
+                                                              │
+                                                              ▼
+                                                     cumsum(q_0.5) ──> rFFT ──> Low-Frequency Regularization (L_spec)
+```
+
+### 🔬 3 Core Technical Relationships Between Data Characteristics & Model Architecture
+
+1. **Low-Frequency Dominance vs Spectral Loss Constraint ($\mathcal{L}_{spec}$):**
+   - **Data Property:** In financial returns, high-frequency fluctuations are dominated by stochastic microstructure noise, whereas macroeconomic market cycles and institutional flows reside predominantly in the low-frequency spectrum.
+   - **Model Failure Mode:** Autoregressive multi-horizon transformers accumulate small step-by-step errors over $H=60, 120, 250$, causing severe cumulative drift and phase distortion.
+   - **Architectural Solution:** By performing a Real Fast Fourier Transform (rFFT) on the cumulative median trajectory $\hat{s}_t = \text{cumsum}(\hat{z}_t(0.5))$ and penalizing spectral mismatch only on the lower cutoff frequencies ($k_c = \lfloor 0.25 N_f \rfloor$), the model is strictly anchored to long-term regime trajectories while maintaining freedom at high frequencies.
+
+2. **Multivariate Market Regimes vs Variable Selection Networks (VSN):**
+   - **Data Property:** Financial series shift between tranquil bull markets and extreme crisis regimes (e.g., COVID-19 in 2020).
+   - **Architectural Solution:** The TFT's VSN applies Gated Residual Networks (GRN) with Softmax gating to compute per-feature attention weights dynamically at every step. When the market is calm, VSN prioritizes `momentum_20d` and `momentum_60d`. Under shock conditions, VSN automatically suppresses noise features and elevates `rolling_vol_20d` and `rolling_vol_60d`.
+
+3. **Volatility Clustering & Fat Tails vs Multi-Quantile Calibration:**
+   - **Data Property:** Return distributions exhibit heavy kurtosis (leptokurtic tails up to 12.18 for META and ^GSPC) and time-varying conditional variance (heteroskedasticity).
+   - **Architectural Solution:** Instead of point forecasts (which fail under fat-tailed regimes), the model outputs $q_{0.1}, q_{0.5}, q_{0.9}$ via asymmetric pinball quantile loss. Crucially, constraining the median path $q_{0.5}$ with spectral consistency stabilizes the entire quantile bundle, restoring the 80% coverage from an uncalibrated 55.6% (baseline TFT collapse) to a well-calibrated 79.9%–87.0%.
 
 ---
 
